@@ -1,14 +1,14 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
-	semver "github.com/Masterminds/semver/v3"
+	"github.com/Masterminds/semver/v3"
 	"github.com/spf13/pflag"
+	gosemver "golang.org/x/mod/semver"
 )
 
 func main() {
@@ -46,31 +46,26 @@ func fail(i any) {
 	os.Exit(1)
 }
 
-func getVersion(args []string) (string, error) {
-	var version string
+func getVersion(versions []string) (string, error) {
+	var err error
 	var readFromStdin bool
 
-	switch len(args) {
-	case 0:
+	if len(versions) == 0 || versions[0] == "-" {
 		readFromStdin = true
-	case 1:
-		version = args[0]
-		readFromStdin = version == "-"
-	default:
-		return "", fmt.Errorf("invalid version supplied. Either pass it in as STDIN, or as the only argument to this program")
 	}
 
 	if readFromStdin {
-		v, err := readInput(os.Stdin)
+		versions, err = readInput()
 		if err != nil {
-			err = fmt.Errorf("error reading stdin: %w", err)
+			err = fmt.Errorf("error reading input: %w", err)
 			return "", err
 		}
 
-		version = string(v)
 	}
 
-	return version, nil
+	gosemver.Sort(versions)
+
+	return versions[len(versions)-1], nil
 }
 
 func bumpVersion(ver *semver.Version) error {
@@ -99,20 +94,12 @@ func bumpVersion(ver *semver.Version) error {
 	return nil
 }
 
-func readInput(reader io.Reader) ([]byte, error) {
-	buf := new(bytes.Buffer)
-	scanner := bufio.NewScanner(reader)
-	for scanner.Scan() {
-		if _, err := buf.Write(scanner.Bytes()); err != nil {
-			err = fmt.Errorf("error writing to buffer: %w", err)
-			return nil, err
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		err = fmt.Errorf("error scanning: %w", err)
+func readInput() ([]string, error) {
+	allVersions, err := io.ReadAll(os.Stdin)
+	if err != nil {
+		err = fmt.Errorf("error reading from stdin: %w", err)
 		return nil, err
 	}
 
-	return buf.Bytes(), nil
+	return strings.Split(string(allVersions), "\n"), nil
 }

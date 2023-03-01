@@ -15,7 +15,7 @@ func setupFlags() {
 	pflag.StringVarP(&prerelease, "pre-release", "p", "", "Set pre-release version")
 	pflag.StringVarP(&metadata, "metadata", "m", "", "Set metadata version")
 	pflag.BoolVarP(&show, "show", "s", false, "Show passed in version and exit")
-	pflag.BoolVarP(&showVersion, "version", "v", false, "Show semver's version and exit")
+	pflag.BoolVarP(&showVersion, "version", "v", false, "Show semver-bumper's version and exit")
 
 	pflag.Parse()
 }

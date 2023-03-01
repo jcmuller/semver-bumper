@@ -11,5 +11,5 @@ func printProgramVersion() {
 		panic("could not read build info")
 	}
 
-	fmt.Printf("semver %s\n", info.Main.Version)
+	fmt.Printf("semver-bumper %s\n", info.Main.Version)
 }
