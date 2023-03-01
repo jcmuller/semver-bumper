@@ -17,7 +17,7 @@ v1.2.4
 
 ```
 # latest tag is v2.1.4
-$ git tag --list 'v*' | tail -n1 | semver-bumper --increment minor
+$ git tag --list 'v*' | semver-bumper --increment minor
 v2.2.0
 ```
 
