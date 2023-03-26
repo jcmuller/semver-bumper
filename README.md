@@ -2,10 +2,13 @@
 
 A semantic version bumper
 
+> **Note**
+> This repository has moved to [sourcehut](https://git.sr.ht/~jcmuller/semver-bumper).
+
 ## Installation
 
 ```
-go install github.com/jcmuller/semver-bumper@latest
+go install git.sr.ht/~jcmuller/semver-bumper@latest
 ```
 
 ## Usage
